@@ -79,7 +79,7 @@ class ImageToSound(object):
         :param stereo:
         :param diffr:
         :param fade:
-        :param bspl:
+        :param bspl: (bool) Time window — B-spline if True, rectangular if False
         :return:
         """
 
@@ -107,13 +107,11 @@ class ImageToSound(object):
             q = 1.0 * (self.k % self.m) / (self.m - 1)
             q2 = 0.5 * q * q
 
-        a = []
-        col_indices = (self.k / self.m).astype(np.uint8)
-        for k_idx in self.k:  # FIXME: This weird convolution needs to be optimised with numpy operations
+            a = []
+            col_indices = (self.k / self.m).astype(np.uint8)
+            for k_idx in self.k:  # FIXME: This weird convolution needs to be optimised with numpy operations
 
-            j = col_indices[k_idx]
-
-            if bspl:
+                j = col_indices[k_idx]
 
                 if j == 0:
                     a.append((1.0 - q2[k_idx]) * image[:, j] +
@@ -128,10 +126,12 @@ class ImageToSound(object):
                              (0.5 + q[k_idx] - q[k_idx] ** 2) * image[:, j] +
                              q2[k_idx] * image[:, j + 1])
 
-            else:
-                a.append(image[:, j])
+            a = np.array(a)
 
-        a = np.array(a)
+        else:
+            image_extended = np.repeat(image, [self.m] * image.shape[1], axis=1)
+            extra_bit = np.outer(np.ones((1, 32)), image[:, -1]).T  # Need to add another 32 columns to end
+            a = np.append(image_extended, extra_bit, axis=1).T
 
         if not stereo:
             # NOTE: I haven't actually tested this
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     image[40:45, 50:] = 250
 
     img2sound = ImageToSound()
-    audio = img2sound.process_image(image)
+    audio = img2sound.process_image(image, bspl=False)
 
     # Play audio
     play_obj = simpleaudio.play_buffer(audio, 2, 2, img2sound.sampling_freq)
