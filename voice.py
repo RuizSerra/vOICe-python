@@ -130,7 +130,7 @@ class ImageToSound(object):
 
         else:
             repeats = [self.m] * image.shape[1]
-            repeats[-1] += int((img2sound.m % 1) * image.shape[1])  # When 'm' is not a whole number, we need to pad
+            repeats[-1] += int((self.m % 1) * image.shape[1])  # When 'm' is not a whole number, we need to pad
             a = np.repeat(image, repeats, axis=1).T
 
         if not stereo:
