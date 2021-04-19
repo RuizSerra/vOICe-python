@@ -24,7 +24,7 @@ class ImageToSound(object):
                  img_width=64,
                  freq_low=500,
                  freq_high=5000,
-                 sampling_freq=44100,
+                 sampling_freq=11025,
                  sweep_time=1.05,
                  d='exponential',
                  delay=True):
@@ -33,7 +33,7 @@ class ImageToSound(object):
         :param img_width:
         :param freq_low:
         :param freq_high:
-        :param sampling_freq:
+        :param sampling_freq: (int) Can be one of [8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200, 96000, 192000]
         :param sweep_time:
         :param d:
         :param delay:
@@ -129,9 +129,9 @@ class ImageToSound(object):
             a = np.array(a)
 
         else:
-            image_extended = np.repeat(image, [self.m] * image.shape[1], axis=1)
-            extra_bit = np.outer(np.ones((1, 32)), image[:, -1]).T  # Need to add another 32 columns to end
-            a = np.append(image_extended, extra_bit, axis=1).T
+            repeats = [self.m] * image.shape[1]
+            repeats[-1] += int((img2sound.m % 1) * image.shape[1])  # When 'm' is not a whole number, we need to pad
+            a = np.repeat(image, repeats, axis=1).T
 
         if not stereo:
             # NOTE: I haven't actually tested this
