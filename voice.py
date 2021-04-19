@@ -134,9 +134,10 @@ class ImageToSound(object):
             a = np.repeat(image, repeats, axis=1).T
 
         if not stereo:
-            # NOTE: I haven't actually tested this
-            audio = a.T.copy(order='C')
-            return audio
+            # TODO
+            raise NotImplemented('Please use stereo for now')
+            # audio = a.copy(order='C')
+            # return audio
 
         # --------------------------------------------------------------------------
         # Left to right panning (stereo)
