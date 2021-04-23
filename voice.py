@@ -11,7 +11,6 @@ Optimised: Jaime RS (Apr 2021)
 import math
 import cv2
 import numpy as np
-import simpleaudio
 
 
 class ImageToSound(object):
@@ -178,6 +177,7 @@ class ImageToSound(object):
 
 if __name__ == '__main__':
 
+    import simpleaudio
     import matplotlib.pyplot as plt
 
     # Dummy image
