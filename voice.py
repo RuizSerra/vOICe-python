@@ -43,20 +43,21 @@ class ImageToSound(object):
         self.img_width = img_width
         self.m = self.ns / self.img_width
         self.scale = 0.5 / math.sqrt(self.img_width)
+        self.img_height = self.img_width  # Assume square image
 
         # ---------------------------------------------------------
         # Set frequency distribution and random initial phase
         # ---------------------------------------------------------
         if d == 'exponential':
-            self.w = self.TWO_PI * freq_low * np.power(1.0 * freq_high / freq_low, np.arange(0, self.img_width) / (self.img_width - 1))
+            self.w = self.TWO_PI * freq_low * np.power(1.0 * freq_high / freq_low, np.arange(0, self.img_height) / (self.img_height - 1))
         elif d == 'linear':
-            self.w = self.TWO_PI * freq_low + self.TWO_PI * (freq_high - freq_low) * np.arange(0, self.img_width) / (self.img_width - 1)
+            self.w = self.TWO_PI * freq_low + self.TWO_PI * (freq_high - freq_low) * np.arange(0, self.img_height) / (self.img_height - 1)
         else:
             raise ValueError(f'Invalid frequency distribution {d}')
 
         self.rnd = (49297 % 233280) / 233280  # Why???? --JRS
         self.phi0 = self.TWO_PI * self.rnd
-        self.tau1 = 0.5 / self.w[self.img_width - 1]
+        self.tau1 = 0.5 / self.w[self.img_height - 1]
         self.tau2 = 0.25 * self.tau1 * self.tau1
 
         self.k = np.arange(0, self.ns)  # Indices of samples
@@ -82,8 +83,8 @@ class ImageToSound(object):
         :return:
         """
 
-        hrtfl = np.ones((self.ns, self.img_width))
-        hrtfr = np.ones((self.ns, self.img_width))
+        hrtfl = np.ones((self.ns, self.img_height))
+        hrtfr = np.ones((self.ns, self.img_height))
 
         if diffr:
             hrtf = self.TWO_PI * self.v / np.outer(self.x, self.w)
