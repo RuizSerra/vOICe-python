@@ -37,7 +37,7 @@ class ImageToSound(object):
         :param d:
         :param delay:
         """
-        self.ns = 2 * int(0.5 * sampling_freq * sweep_time)
+        self.ns = np.floor(sampling_freq * sweep_time).astype(np.int)
         self.dt = 1.0 / sampling_freq
         self.sampling_freq = sampling_freq
         self.img_width = img_width
