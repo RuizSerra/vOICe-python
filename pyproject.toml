@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "voice-python"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
   { name="Jaime Ruiz Serra", email="jrs271828@gmail.com" },
 ]
@@ -19,7 +19,7 @@ classifiers = [
 ]
 dependencies = [
   "numpy",
-  "opencv-python"
+  "opencv-python==4.5.5.64"
 ]
 
 [project.urls]

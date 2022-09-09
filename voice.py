@@ -44,6 +44,7 @@ class ImageToSound(object):
         self.m = self.ns / self.img_width
         self.scale = 0.5 / math.sqrt(self.img_width)
         self.img_height = self.img_width  # Assume square image
+        self.play_obj = None
 
         # ---------------------------------------------------------
         # Set frequency distribution and random initial phase
@@ -132,6 +133,12 @@ class ImageToSound(object):
             repeats = [self.m] * image.shape[1]
             repeats[-1] += int((self.m % 1) * image.shape[1])  # When 'm' is not a whole number, we need to pad
             a = np.repeat(image, repeats, axis=1).T
+
+            if a.shape != hrtfl.shape:
+                # a_difference = hrtfl.shape[0] - a.shape[0]
+                a = np.append(a, [a[-1]], axis=0)
+
+                assert a.shape == hrtfl.shape, f'{a.shape}, {hrtfl.shape}'
 
         if not stereo:
             # TODO
